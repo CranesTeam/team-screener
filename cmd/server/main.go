@@ -12,6 +12,7 @@ import (
 	"github.com/CranesTeam/team-screener/pkg/repository"
 	"github.com/CranesTeam/team-screener/pkg/server"
 	"github.com/CranesTeam/team-screener/pkg/service"
+	"github.com/spf13/viper"
 )
 
 func main() {
@@ -20,13 +21,17 @@ func main() {
 		"the duration for which the server gracefully wait for existing connections to finish - e.g. 15s or 1m")
 	flag.Parse()
 
+	if err := InitConfig(); err != nil {
+		log.Fatalf("error initialisation config %s", err.Error())
+	}
+
 	log.Println("init hander and start server")
 	repo := repository.NewRepository()
 	service := service.NewService(repo)
 	handlers := handler.NewHandler(service)
 
 	srv := new(server.Server)
-	if err := srv.Run("8089", handlers.InitRoutes()); err != nil {
+	if err := srv.Run(viper.GetString("port"), handlers.InitRoutes()); err != nil {
 		log.Fatalf("error occured while runnig http server: %s", err.Error())
 	}
 
@@ -39,4 +44,10 @@ func main() {
 	srv.Shutdown(ctx)
 	log.Println("shutting down")
 	os.Exit(0)
+}
+
+func InitConfig() error {
+	viper.AddConfigPath("config")
+	viper.SetConfigName("config")
+	return viper.ReadInConfig()
 }
