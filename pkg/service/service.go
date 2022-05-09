@@ -1,18 +1,28 @@
 package service
 
-import "github.com/CranesTeam/team-screener/pkg/repository"
+import (
+	m "github.com/CranesTeam/team-screener/pkg/model"
+	r "github.com/CranesTeam/team-screener/pkg/repository"
+)
 
-type Autorisation interface {
+type Authorization interface {
+	CreateUser(user m.UserDto) (string, error)
 }
 
-type Skill interface {
+type Skills interface {
+}
+
+type UserSkills interface {
 }
 
 type Service struct {
-	Autorisation
-	Skill
+	Authorization
+	Skills
+	UserSkills
 }
 
-func NewService(repo *repository.Repository) *Service {
-	return &Service{}
+func NewService(repo *r.Repository) *Service {
+	return &Service{
+		Authorization: NewAuthService(repo.Authorization),
+	}
 }

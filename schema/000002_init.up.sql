@@ -1,25 +1,25 @@
 create table users (
 	id serial not null unique,
-	external_uuid string not null unique,
+	external_uuid varchar(55) not null unique default uuid_generate_v4(),
 	name varchar(55) not null,
 	username varchar(25) not null unique,
-	password_hash vachar(255) not null
+	password_hash varchar(255) not null
 );
 
 create unique index user_extrernal_uuid_idx on users(external_uuid);
 
 create table skills (
 	id serial not null unique,
-	external_uuid string not null unique,
+	external_uuid varchar(55) not null unique default uuid_generate_v4(),
 	name varchar(55) not null,
 	title varchar(55) not null,
-	description vachar(255)	
+	description varchar(255)	
 );
 
-create unique index skill_extrernal_uuid_idx on skill(external_uuid);
-create unique index skill_name_idx on skill(name);
+create unique index skill_extrernal_uuid_idx on skills(external_uuid);
+create unique index skill_name_idx on skills(name);
 
-insert into skill (external_uuid, name, title, description) values 
+insert into skills (external_uuid, name, title, description) values 
 (uuid_generate_v4(), 'Java', 'Java', 'Java 8-16 version'),
 (uuid_generate_v4(), 'Kotlin', 'Kotlin', 'Kotlin as main language'),
 (uuid_generate_v4(), 'Kotlin Coroutines', 'Kotlin Coroutines', 'Multithreading with Kotlin'),
@@ -44,7 +44,7 @@ insert into skill (external_uuid, name, title, description) values
 
 create table userSkills (
 	id serial not null unique,
-	external_uuid string not null unique,	
+	external_uuid varchar(55) not null unique default uuid_generate_v4(),	
 	user_id int references users(id) on delete cascade not null,
 	skill_id int references skills(id) on delete cascade not null,
 	points int not null

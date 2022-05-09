@@ -1,16 +1,24 @@
 package repository
 
-type Autorisation interface {
+import (
+	m "github.com/CranesTeam/team-screener/pkg/model"
+	"github.com/jmoiron/sqlx"
+)
+
+type Authorization interface {
+	CreateUser(user m.User) (string, error)
 }
 
 type Skill interface {
 }
 
 type Repository struct {
-	Autorisation
+	Authorization
 	Skill
 }
 
-func NewRepository() *Repository {
-	return &Repository{}
+func NewRepository(db *sqlx.DB) *Repository {
+	return &Repository{
+		Authorization: NewAuthRepository(db),
+	}
 }
