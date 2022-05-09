@@ -9,7 +9,9 @@ import (
 	"time"
 
 	"github.com/CranesTeam/team-screener/pkg/handler"
+	"github.com/CranesTeam/team-screener/pkg/repository"
 	"github.com/CranesTeam/team-screener/pkg/server"
+	"github.com/CranesTeam/team-screener/pkg/service"
 )
 
 func main() {
@@ -19,7 +21,9 @@ func main() {
 	flag.Parse()
 
 	log.Println("init hander and start server")
-	handlers := new(handler.Handler)
+	repo := repository.NewRepository()
+	service := service.NewService(repo)
+	handlers := handler.NewHandler(service)
 
 	srv := new(server.Server)
 	if err := srv.Run("8089", handlers.InitRoutes()); err != nil {
