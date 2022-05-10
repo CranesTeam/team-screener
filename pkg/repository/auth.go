@@ -17,15 +17,20 @@ func NewAuthRepository(db *sqlx.DB) *AuthRepository {
 }
 
 func (r *AuthRepository) CreateUser(user m.User) (string, error) {
-	var uuid string
-
-	query := fmt.Sprintf("INSERT INTO %s (name, username, password_hash) values ($1, $2, $3) returning external_uuid", usersTable)
-	row := r.db.QueryRow(query, user.Name, user.Username, user.PasswordHash)
-	if err := row.Scan(&uuid); err != nil {
+	tx, err := r.db.Begin()
+	if err != nil {
 		return "empty", err
 	}
 
-	return uuid, nil
+	var uuid string
+	query := fmt.Sprintf("INSERT INTO %s (name, username, password_hash) values ($1, $2, $3) returning external_uuid", usersTable)
+	row := tx.QueryRow(query, user.Name, user.Username, user.PasswordHash)
+	if err := row.Scan(&uuid); err != nil {
+		tx.Rollback()
+		return "empty", err
+	}
+
+	return uuid, tx.Commit()
 }
 
 func (r *AuthRepository) GetUser(username, password string) (model.User, error) {

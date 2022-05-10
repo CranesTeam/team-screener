@@ -8,7 +8,7 @@ import (
 
 const (
 	usersTable      = "users"
-	skilsTable      = "skills"
+	skillsTable     = "skills"
 	userSkillsTable = "userSkills"
 )
 

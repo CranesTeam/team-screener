@@ -5,16 +5,16 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-type error struct {
+type errorResponse struct {
 	Message string `json:"message"`
 }
 
-func NewErrorResponse(g *gin.Context, statusCode int, message string) {
+func newErrorResponse(g *gin.Context, statusCode int, message string) {
 	logrus.Error(message)
-	g.AbortWithStatusJSON(statusCode, error{message})
+	g.AbortWithStatusJSON(statusCode, errorResponse{message})
 }
 
-type CreateUserResponse struct {
+type CreateResponse struct {
 	Uuid string `json:"uuid"`
 }
 

@@ -12,6 +12,9 @@ type Authorization interface {
 }
 
 type Skills interface {
+	CreateNewSkill(skill m.SkillRequest) (string, error)
+	GetAll() ([]m.SkillDto, error)
+	FindOne(name string) (m.SkillDto, error)
 }
 
 type UserSkills interface {
@@ -26,5 +29,6 @@ type Service struct {
 func NewService(repo *r.Repository) *Service {
 	return &Service{
 		Authorization: NewAuthService(repo.Authorization),
+		Skills:        NewSkillService(repo.Skills),
 	}
 }

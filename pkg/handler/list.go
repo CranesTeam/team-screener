@@ -2,26 +2,23 @@ package handler
 
 import "github.com/gin-gonic/gin"
 
-func (h *Handler) getAllSkill(c *gin.Context) {
+func (h *Handler) createNewSkillList(c *gin.Context) {
+	// todo: only admin role
+}
+
+func (h *Handler) getListOfSkills(c *gin.Context) {
+	// list of all
 
 }
 
-func (h *Handler) saveSkill(c *gin.Context) {
-
+func (h *Handler) add(c *gin.Context) {
+	// find by id
 }
 
-func (h *Handler) getSkillById(c *gin.Context) {
-
+func (h *Handler) updateSkill(c *gin.Context) {
+	// find by id
 }
 
-func (h *Handler) addSkill(c *gin.Context) {
-
-}
-
-func (h *Handler) updateSkills(c *gin.Context) {
-
-}
-
-func (h *Handler) deteleSkill(c *gin.Context) {
-
+func (h *Handler) deleteSkill(c *gin.Context) {
+	// find by id
 }

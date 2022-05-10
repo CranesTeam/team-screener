@@ -24,11 +24,14 @@ func (h *Handler) InitRoutes() *gin.Engine {
 
 	api := router.Group("/api", h.userIdentity)
 	{
+		skill := api.Group("/skill")
+		{
+			skill.POST("/", h.createSkill)
+			skill.GET("/:id", h.findSkill)
+		}
 		skills := api.Group("/skills")
 		{
-			skills.POST("/", h.createSkill)
 			skills.GET("/", h.getAllSkills)
-			skills.GET("/:id", h.getOneSkill)
 		}
 
 		// TODO:
