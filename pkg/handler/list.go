@@ -1,24 +1,45 @@
 package handler
 
-import "github.com/gin-gonic/gin"
+import (
+	"net/http"
 
-func (h *Handler) createNewSkillList(c *gin.Context) {
-	// todo: only admin role
+	"github.com/gin-gonic/gin"
+)
+
+func (h *Handler) getUserSkillList(c *gin.Context) {
+	uuid, ok := c.Get(userCtx)
+	if !ok {
+		newErrorResponse(c, http.StatusBadRequest, "user not found")
+	}
+
+	list, err := h.services.UserSkills.GetUserSkills(uuid.(string))
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+	}
+
+	c.JSON(http.StatusOK, list)
 }
 
-func (h *Handler) getListOfSkills(c *gin.Context) {
-	// list of all
+func (h *Handler) addNewSkillPoint(c *gin.Context) {
 
 }
 
-func (h *Handler) add(c *gin.Context) {
-	// find by id
+func (h *Handler) addNewSkill(c *gin.Context) {
+
 }
 
-func (h *Handler) updateSkill(c *gin.Context) {
-	// find by id
+func (h *Handler) findUserSkill(c *gin.Context) {
+
+}
+
+func (h *Handler) updateUserSkills(c *gin.Context) {
+
+}
+
+func (h *Handler) deteleUserSkill(c *gin.Context) {
+
 }
 
 func (h *Handler) deleteSkill(c *gin.Context) {
-	// find by id
+
 }

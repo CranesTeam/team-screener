@@ -17,16 +17,19 @@ type Skills interface {
 }
 
 type UserSkills interface {
+	GetUserSkills(user_uuid string) ([]m.UserSkills, error)
 }
 
 type Repository struct {
 	Authorization
 	Skills
+	UserSkills
 }
 
 func NewRepository(db *sqlx.DB) *Repository {
 	return &Repository{
 		Authorization: NewAuthRepository(db),
 		Skills:        NewSkillsRepository(db),
+		UserSkills:    NewUserSkillsRepository(db),
 	}
 }

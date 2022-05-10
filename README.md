@@ -11,7 +11,7 @@ version 0.0.1-SNAPSHOT
 1. Install migrate tool
 2. run postgres
 3. add uuid extention  
-`docker exec -it 9a7b2d429cfc /bin/bash` . 
+`docker exec -it 9a7b2d429cfc /bin/bash`   
 `psql -U postgres`  
 ` CREATE EXTENSION IF NOT EXISTS "uuid-ossp";`  
 4. run script 

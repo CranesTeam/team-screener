@@ -18,6 +18,7 @@ type Skills interface {
 }
 
 type UserSkills interface {
+	GetUserSkills(user_uuid string) (m.SkillListDto, error)
 }
 
 type Service struct {
@@ -30,5 +31,6 @@ func NewService(repo *r.Repository) *Service {
 	return &Service{
 		Authorization: NewAuthService(repo.Authorization),
 		Skills:        NewSkillService(repo.Skills),
+		UserSkills:    NewUserSkillsService(repo.UserSkills),
 	}
 }
