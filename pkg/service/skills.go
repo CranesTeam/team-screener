@@ -3,7 +3,6 @@ package service
 import (
 	m "github.com/CranesTeam/team-screener/pkg/model"
 	r "github.com/CranesTeam/team-screener/pkg/repository"
-	"github.com/sirupsen/logrus"
 )
 
 type SkillService struct {
@@ -26,11 +25,7 @@ func (s *SkillService) CreateNewSkill(skill m.SkillRequest) (string, error) {
 
 func (s *SkillService) GetAll() ([]m.SkillDto, error) {
 	skills, err := s.repo.GetAll()
-	if err != nil {
-		return nil, err
-	}
 
-	logrus.Info(skills)
 	var skillsDto []m.SkillDto
 
 	for _, entity := range skills {
@@ -42,7 +37,7 @@ func (s *SkillService) GetAll() ([]m.SkillDto, error) {
 		})
 	}
 
-	return skillsDto, nil
+	return skillsDto, err
 }
 
 func (s *SkillService) FindOne(uuid string) (m.SkillDto, error) {

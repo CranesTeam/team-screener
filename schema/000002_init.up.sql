@@ -45,8 +45,8 @@ insert into skills (external_uuid, name, title, description) values
 create table userSkills (
 	id serial not null unique,
 	external_uuid varchar(55) not null unique default uuid_generate_v4(),	
-	user_id int references users(id) on delete cascade not null,
-	skill_id int references skills(id) on delete cascade not null,
+	user_uuid varchar(55) references users(external_uuid) on delete cascade not null,
+	skill_uuid varchar(55) references skills(external_uuid) on delete cascade not null,
 	points int not null
 );
 

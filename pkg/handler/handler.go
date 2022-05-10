@@ -34,16 +34,14 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			skills.GET("/", h.getAllSkills)
 		}
 
-		// TODO:
-		// userSkills := api.Group(":id/skills")
-		// {
-		// 	userSkills.GET("/", h.getAllSkill)
-		// 	userSkills.POST("/", h.addSkill)
-		// 	userSkills.GET("/:skill_id", h.getSkillById)
-		// 	userSkills.PUT("/:skill_id", h.updateSkills)
-		// 	userSkills.DELETE("/:skill_id", h.deteleSkill)
-		// }
-
+		list := api.Group("/list")
+		{
+			list.GET("/", h.getUserSkillList)
+			list.POST("/", h.addNewSkill)
+			list.GET("/:skill_uuid", h.findUserSkill)
+			list.POST("/:skill_uuid/:points", h.updateUserSkills)
+			list.DELETE("/:skill_uuid", h.deteleUserSkill)
+		}
 		service := api.Group("/health")
 		{
 			service.GET("/", h.health)

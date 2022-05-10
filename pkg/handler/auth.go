@@ -5,6 +5,7 @@ import (
 
 	"github.com/CranesTeam/team-screener/pkg/model"
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 )
 
 func (h *Handler) singUp(c *gin.Context) {
@@ -14,6 +15,8 @@ func (h *Handler) singUp(c *gin.Context) {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
+
+	logrus.Infof("Create new user: %s", user)
 
 	uuid, err := h.services.CreateUser(user)
 	if err != nil {
@@ -31,6 +34,8 @@ func (h *Handler) singIn(c *gin.Context) {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
+
+	logrus.Infof("Generate user token for user:%s", user)
 
 	token, err := h.services.GenerateToken(user.Username, user.Password)
 	if err != nil {

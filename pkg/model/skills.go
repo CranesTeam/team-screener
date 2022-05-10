@@ -24,20 +24,26 @@ type SkillRequest struct {
 
 /** Skill list */
 type UserSkills struct {
+	ExternaUuid string `db:"external_uuid"`
 	Name        string `db:"name"`
 	Title       string `db:"title"`
 	Description string `db:"description"`
-	Points      int    `db:"point"`
+	Points      int    `db:"points"`
+}
+
+type UserSkillsDto struct {
+	Name        string `json:"name"`
+	Title       string `json:"title"`
+	Description string `json:"description"`
+	Points      int    `json:"points"`
 }
 
 type SkillListDto struct {
-	UserId        string            `json:"user_uuid"`
-	SkillPointers []SkillPointerDto `json:"skills"`
+	UserId        string          `json:"user_uuid"`
+	SkillPointers []UserSkillsDto `json:"skills"`
 }
 
-type SkillPointerDto struct {
-	Uuid        string `json:"uuid"`
-	Title       string `json:"title"`
-	Description string `json:"description"`
-	Point       int    `json:"point"`
+type AddSkillRequest struct {
+	SkillUuid string `json:"skill_uuid"`
+	Point     int    `json:"point"`
 }

@@ -1,17 +1,19 @@
-# team-screener
+# 🙋👩‍💻 Team-screener
 
 Team screener
 
-version 0.0.1-SNAPSHOT
+version 0.0.2-SNAPSHOT
 
-
-
+Base scenario:
+![Base scenario](.img/image1.png)
+Web integration:
+![Web integration](.img/image2.png)
 
 ## Init migrations:
 1. Install migrate tool
 2. run postgres
 3. add uuid extention  
-`docker exec -it 9a7b2d429cfc /bin/bash` . 
+`docker exec -it 9a7b2d429cfc /bin/bash`   
 `psql -U postgres`  
 ` CREATE EXTENSION IF NOT EXISTS "uuid-ossp";`  
 4. run script 
