@@ -7,6 +7,8 @@ import (
 
 type Authorization interface {
 	CreateUser(user m.UserDto) (string, error)
+	GenerateToken(username, password string) (string, error)
+	ParseToken(token string) (string, error)
 }
 
 type Skills interface {

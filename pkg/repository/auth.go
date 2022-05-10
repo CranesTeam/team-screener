@@ -3,6 +3,7 @@ package repository
 import (
 	"fmt"
 
+	"github.com/CranesTeam/team-screener/pkg/model"
 	m "github.com/CranesTeam/team-screener/pkg/model"
 	"github.com/jmoiron/sqlx"
 )
@@ -25,4 +26,12 @@ func (r *AuthRepository) CreateUser(user m.User) (string, error) {
 	}
 
 	return uuid, nil
+}
+
+func (r *AuthRepository) GetUser(username, password string) (model.User, error) {
+	var user model.User
+
+	query := fmt.Sprintf("select * from %s where username=$1 and password_hash=$2", usersTable)
+	err := r.db.Get(&user, query, username, password)
+	return user, err
 }

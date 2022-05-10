@@ -25,5 +25,18 @@ func (h *Handler) singUp(c *gin.Context) {
 }
 
 func (h *Handler) singIn(c *gin.Context) {
+	var user model.UserAuthRequest
 
+	if err := c.BindJSON(&user); err != nil {
+		NewErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	token, err := h.services.GenerateToken(user.Username, user.Password)
+	if err != nil {
+		NewErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, AuthTokenResponse{Token: token})
 }
