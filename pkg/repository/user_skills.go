@@ -42,3 +42,48 @@ func (r *UserSkillRepository) AddNewSkill(user_uuid string, skill_uuid string, p
 	return uuid, tx.Commit()
 
 }
+
+func (r *UserSkillRepository) FindSkill(user_uuid string, skill_uuid string) (m.UserSkills, error) {
+	var userSkill m.UserSkills
+	query := fmt.Sprintf("select st.external_uuid, st.name, st.title, st.description, ust.points from %s ust "+
+		"inner join %s st on ust.skill_uuid = st.external_uuid "+
+		"where ust.user_uuid=$1 and ust.skill_uuid=$2", userSkillsTable, skillsTable)
+	err := r.db.Get(&userSkill, query, user_uuid, skill_uuid)
+
+	return userSkill, err
+}
+
+func (r *UserSkillRepository) DeleteSkill(user_uuid string, skill_uuid string) (string, error) {
+	tx, err := r.db.Begin()
+	if err != nil {
+		return "empty", err
+	}
+
+	var uuid string
+	query := fmt.Sprintf("delete feom %s where user_uuid=$1 and skill_uuid=$2 returning external_uuid", userSkillsTable)
+	row := tx.QueryRow(query, user_uuid, skill_uuid)
+	if err := row.Scan(&uuid); err != nil {
+		tx.Rollback()
+		return "empty", err
+	}
+
+	return uuid, tx.Commit()
+
+}
+
+func (r *UserSkillRepository) UpdatePoint(user_uuid string, skill_uuid string, points string) (string, error) {
+	tx, err := r.db.Begin()
+	if err != nil {
+		return "empty", err
+	}
+
+	var uuid string
+	query := fmt.Sprintf("update %s set points=$1 where user_uuid=$2 and skill_uuid=$3 returning external_uuid", userSkillsTable)
+	row := tx.QueryRow(query, points, user_uuid, skill_uuid)
+	if err := row.Scan(&uuid); err != nil {
+		tx.Rollback()
+		return "empty", err
+	}
+
+	return uuid, tx.Commit()
+}

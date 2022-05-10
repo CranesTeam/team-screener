@@ -1,11 +1,13 @@
-# team-screener
+# 🙋👩‍💻 Team-screener
 
 Team screener
 
-version 0.0.1-SNAPSHOT
+version 0.0.2-SNAPSHOT
 
-
-
+Base scenario:
+![Base scenario](.img/image1.png)
+Web integration:
+![Web integration](.img/image2.png)
 
 ## Init migrations:
 1. Install migrate tool

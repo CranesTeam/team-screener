@@ -38,9 +38,9 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		{
 			list.GET("/", h.getUserSkillList)
 			list.POST("/", h.addNewSkill)
-			list.GET("/:skill_id", h.findUserSkill)
-			list.PUT("/:skill_id", h.updateUserSkills)
-			list.DELETE("/:skill_id", h.deteleUserSkill)
+			list.GET("/:skill_uuid", h.findUserSkill)
+			list.POST("/:skill_uuid/:points", h.updateUserSkills)
+			list.DELETE("/:skill_uuid", h.deteleUserSkill)
 		}
 		service := api.Group("/health")
 		{
