@@ -22,8 +22,13 @@ func (s *UserSkillsService) GetUserSkills(user_uuid string) (m.SkillListDto, err
 			Name:        entity.Name,
 			Title:       entity.Title,
 			Description: entity.Description,
+			Points:      entity.Points,
 		})
 	}
 
 	return m.SkillListDto{UserId: user_uuid, SkillPointers: userSkillsDto}, err
+}
+
+func (s *UserSkillsService) AddNewSkillPointer(user_uuid string, skillRequest m.AddSkillRequest) (string, error) {
+	return s.repo.AddNewSkill(user_uuid, skillRequest.SkillUuid, skillRequest.Point)
 }

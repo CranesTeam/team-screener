@@ -19,6 +19,7 @@ type Skills interface {
 
 type UserSkills interface {
 	GetUserSkills(user_uuid string) (m.SkillListDto, error)
+	AddNewSkillPointer(user_uuid string, skillRequest m.AddSkillRequest) (string, error)
 }
 
 type Service struct {

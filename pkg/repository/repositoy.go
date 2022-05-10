@@ -18,6 +18,7 @@ type Skills interface {
 
 type UserSkills interface {
 	GetUserSkills(user_uuid string) ([]m.UserSkills, error)
+	AddNewSkill(user_uuid string, skill_uuid string, point int) (string, error)
 }
 
 type Repository struct {

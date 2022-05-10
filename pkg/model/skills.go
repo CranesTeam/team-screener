@@ -28,17 +28,22 @@ type UserSkills struct {
 	Name        string `db:"name"`
 	Title       string `db:"title"`
 	Description string `db:"description"`
-	Points      int    `db:"point"`
+	Points      int    `db:"points"`
 }
 
 type UserSkillsDto struct {
 	Name        string `json:"name"`
 	Title       string `json:"title"`
 	Description string `json:"description"`
-	Point       int    `json:"point"`
+	Points      int    `json:"points"`
 }
 
 type SkillListDto struct {
 	UserId        string          `json:"user_uuid"`
 	SkillPointers []UserSkillsDto `json:"skills"`
+}
+
+type AddSkillRequest struct {
+	SkillUuid string `json:"skill_uuid"`
+	Point     int    `json:"point"`
 }
