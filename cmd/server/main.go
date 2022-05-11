@@ -2,10 +2,9 @@ package main
 
 import (
 	"context"
-	"flag"
 	"os"
 	"os/signal"
-	"time"
+	"syscall"
 
 	"github.com/CranesTeam/team-screener/pkg/handler"
 	"github.com/CranesTeam/team-screener/pkg/repository"
@@ -29,12 +28,16 @@ func init() {
 	}
 }
 
-func main() {
-	var wait time.Duration
-	flag.DurationVar(&wait, "graceful-timeout", time.Second*15,
-		"the duration for which the server gracefully wait for existing connections to finish - e.g. 15s or 1m")
-	flag.Parse()
+// @title Team screener app
+// @version 0.0.1-SNAPSHOT
+// @description Skills services
 
+// @BasePath /
+
+// @securityDefinitions.apiKey ApiKeyAuth
+// @in header
+// @name Authorization
+func main() {
 	db, err := repository.NewPostgresDb(repository.Config{
 		Host:     viper.GetString("db.postgres.host"),
 		Port:     viper.GetString("db.postgres.port"),
@@ -52,18 +55,27 @@ func main() {
 	handlers := handler.NewHandler(service)
 
 	srv := new(server.Server)
-	if err := srv.Run(viper.GetString("port"), handlers.InitRoutes()); err != nil {
-		logrus.Fatalf("error occured while runnig http server: %s", err.Error())
-	}
+	go func() {
+		if err := srv.Run(viper.GetString("port"), handlers.InitRoutes()); err != nil {
+			logrus.Fatalf("error occured while runnig http server: %s", err.Error())
+		}
+	}()
 
 	c := make(chan os.Signal, 1)
-	signal.Notify(c, os.Interrupt)
+	signal.Notify(c, os.Interrupt, syscall.SIGTERM, syscall.SIGINT)
 	<-c
 
-	ctx, cancel := context.WithTimeout(context.Background(), wait)
-	defer cancel()
-	srv.Shutdown(ctx)
-	logrus.Println("shutting down")
+	logrus.Println("shutting down...")
+
+	if err := srv.Shutdown(context.Background()); err != nil {
+		logrus.Errorf("error occured server shutting down: %s", err.Error())
+	}
+
+	if err := db.Close(); err != nil {
+		logrus.Errorf("error occured closing connections: %s", err.Error())
+	}
+
+	logrus.Println("done...")
 	os.Exit(0)
 }
 

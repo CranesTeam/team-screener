@@ -1,0 +1,418 @@
+basePath: /
+definitions:
+  handler.CreateResponse:
+    properties:
+      uuid:
+        type: string
+    type: object
+  handler.errorResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  model.AddSkillRequest:
+    properties:
+      point:
+        type: integer
+      skill_uuid:
+        type: string
+    type: object
+  model.SkillDto:
+    properties:
+      description:
+        type: string
+      external_id:
+        type: string
+      name:
+        type: string
+      title:
+        type: string
+    required:
+    - external_id
+    - name
+    - title
+    type: object
+  model.SkillListDto:
+    properties:
+      skills:
+        items:
+          $ref: '#/definitions/model.UserSkillsDto'
+        type: array
+      user_uuid:
+        type: string
+    type: object
+  model.SkillRequest:
+    properties:
+      description:
+        type: string
+      name:
+        type: string
+      title:
+        type: string
+    required:
+    - description
+    - name
+    - title
+    type: object
+  model.UserAuthRequest:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  model.UserDto:
+    properties:
+      name:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - name
+    - password
+    - username
+    type: object
+  model.UserSkillsDto:
+    properties:
+      description:
+        type: string
+      name:
+        type: string
+      points:
+        type: integer
+      title:
+        type: string
+    type: object
+info:
+  contact: {}
+  description: Skills services
+  title: Team screener app
+  version: 0.0.1-SNAPSHOT
+paths:
+  /api/list:
+    get:
+      consumes:
+      - application/json
+      description: get all user skills
+      operationId: get-all-user-skills
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.SkillListDto'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get all user skills
+      tags:
+      - user-skills
+  /api/list/:skill_uuid:
+    delete:
+      consumes:
+      - application/json
+      description: delete user skill by uuid
+      operationId: delete-one-user-skills
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.UserSkillsDto'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: delete user skill by uuid
+      tags:
+      - user-skills
+    get:
+      consumes:
+      - application/json
+      description: find user skill by uuid
+      operationId: find-one-user-skills
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.UserSkillsDto'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Find user skills by uuid
+      tags:
+      - user-skills
+  /api/list/:skill_uuid/:points:
+    post:
+      consumes:
+      - application/json
+      description: update user skill point by uuid
+      operationId: update-one-user-skills
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.CreateResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: update user skill point by uuid
+      tags:
+      - user-skills
+  /api/skill:
+    post:
+      consumes:
+      - application/json
+      description: create user skill
+      operationId: create-skill
+      parameters:
+      - description: skill info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/model.SkillRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.CreateResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Create user skill
+      tags:
+      - skills
+  /api/skill/:uuid:
+    get:
+      consumes:
+      - application/json
+      description: get skill by uuid
+      operationId: get-list-skill-uuid
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.SkillDto'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get skill by uuid
+      tags:
+      - skills
+  /api/skills:
+    get:
+      consumes:
+      - application/json
+      description: get all skills
+      operationId: get-all-skills
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.SkillDto'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get All Skills
+      tags:
+      - skills
+  /auth/sing-in:
+    post:
+      consumes:
+      - application/json
+      description: User sing in method
+      parameters:
+      - description: account info
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/model.UserAuthRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.CreateResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+      summary: Sing In
+      tags:
+      - auth
+  /auth/sing-up:
+    post:
+      consumes:
+      - application/json
+      description: User sing up method
+      parameters:
+      - description: account info
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/model.UserDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.CreateResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+      summary: Sing Up
+      tags:
+      - auth
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

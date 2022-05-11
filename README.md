@@ -20,6 +20,10 @@ Web integration:
 `migrate -path ./schema -database 'postgres://postgres:pwd@localhost:5432/postgres?sslmode=disable' up`
 
 
+## Init swagger  
+`swag init -g cmd/server/main.go`
+
+
 ---
 
 It might help u to read more userful materials:
