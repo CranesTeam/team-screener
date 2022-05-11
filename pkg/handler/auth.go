@@ -8,6 +8,17 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+// @Summary      Sing Up
+// @Description  User sing up method
+// @Tags         auth
+// @Accept       json
+// @Produce      json
+// @Param        user body model.UserDto true "account info"
+// @Success      200  {object}  CreateResponse
+// @Failure      400  {object}  errorResponse
+// @Failure      404  {object}  errorResponse
+// @Failure      500  {object}  errorResponse
+// @Router       /auth/sing-up [POST]
 func (h *Handler) singUp(c *gin.Context) {
 	var user model.UserDto
 
@@ -27,6 +38,17 @@ func (h *Handler) singUp(c *gin.Context) {
 	c.JSON(http.StatusOK, CreateResponse{Uuid: uuid})
 }
 
+// @Summary      Sing In
+// @Description  User sing in method
+// @Tags         auth
+// @Accept       json
+// @Produce      json
+// @Param        user body model.UserAuthRequest true "account info"
+// @Success      200  {object}  CreateResponse
+// @Failure      400  {object}  errorResponse
+// @Failure      404  {object}  errorResponse
+// @Failure      500  {object}  errorResponse
+// @Router       /auth/sing-in [POST]
 func (h *Handler) singIn(c *gin.Context) {
 	var user model.UserAuthRequest
 
