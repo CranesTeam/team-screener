@@ -45,6 +45,7 @@ func (s *UserSkillsService) UpdatePoint(user_uuid string, skill_uuid string, poi
 
 func convert(entity m.UserSkills) m.UserSkillsDto {
 	return m.UserSkillsDto{
+		ExternaUuid: entity.ExternaUuid,
 		Name:        entity.Name,
 		Title:       entity.Title,
 		Description: entity.Description,
