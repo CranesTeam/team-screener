@@ -32,6 +32,7 @@ type UserSkills struct {
 }
 
 type UserSkillsDto struct {
+	ExternaUuid string `json:"external_uuid"`
 	Name        string `json:"name"`
 	Title       string `json:"title"`
 	Description string `json:"description"`
