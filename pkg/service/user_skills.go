@@ -30,9 +30,7 @@ func (s *UserSkillsService) AddNewSkillPointer(user_uuid string, skillRequest m.
 
 func (s *UserSkillsService) FindSkill(user_uuid string, skill_uuid string) (m.UserSkillsDto, error) {
 	entity, err := s.repo.FindSkill(user_uuid, skill_uuid)
-	skillDto := convert(entity)
-
-	return skillDto, err
+	return convert(entity), err
 }
 
 func (s *UserSkillsService) DeleteSkill(user_uuid string, skill_uuid string) (string, error) {
@@ -44,11 +42,5 @@ func (s *UserSkillsService) UpdatePoint(user_uuid string, skill_uuid string, poi
 }
 
 func convert(entity m.UserSkills) m.UserSkillsDto {
-	return m.UserSkillsDto{
-		ExternaUuid: entity.ExternaUuid,
-		Name:        entity.Name,
-		Title:       entity.Title,
-		Description: entity.Description,
-		Points:      entity.Points,
-	}
+	return m.UserSkillsDto(entity)
 }
