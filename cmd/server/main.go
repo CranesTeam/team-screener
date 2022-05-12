@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/CranesTeam/team-screener/pkg/handler"
 	"github.com/CranesTeam/team-screener/pkg/repository"
@@ -38,6 +39,9 @@ func init() {
 // @in header
 // @name Authorization
 func main() {
+	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
+	defer stop()
+
 	db, err := repository.NewPostgresDb(repository.Config{
 		Host:     viper.GetString("db.postgres.host"),
 		Port:     viper.GetString("db.postgres.port"),
@@ -61,22 +65,17 @@ func main() {
 		}
 	}()
 
-	c := make(chan os.Signal, 1)
-	signal.Notify(c, os.Interrupt, syscall.SIGTERM, syscall.SIGINT)
-	<-c
+	<-ctx.Done()
+	stop()
+	logrus.Println("shutting down gracefully, press Ctrl+C again to force")
 
-	logrus.Println("shutting down...")
-
-	if err := srv.Shutdown(context.Background()); err != nil {
-		logrus.Errorf("error occured server shutting down: %s", err.Error())
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	if err := srv.Shutdown(ctx); err != nil {
+		logrus.Fatal("Server forced to shutdown: ", err)
 	}
 
-	if err := db.Close(); err != nil {
-		logrus.Errorf("error occured closing connections: %s", err.Error())
-	}
-
-	logrus.Println("done...")
-	os.Exit(0)
+	logrus.Println("Server exiting")
 }
 
 func InitConfig() error {
