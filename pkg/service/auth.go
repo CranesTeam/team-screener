@@ -1,14 +1,14 @@
 package service
 
 import (
-	"crypto/sha1"
 	"errors"
-	"fmt"
 	"time"
 
 	m "github.com/CranesTeam/team-screener/pkg/model"
 	r "github.com/CranesTeam/team-screener/pkg/repository"
 	"github.com/dgrijalva/jwt-go"
+	"github.com/sirupsen/logrus"
+	"golang.org/x/crypto/bcrypt"
 )
 
 const (
@@ -31,32 +31,74 @@ func NewAuthService(repo r.Authorization) *AuthService {
 }
 
 func (s *AuthService) CreateUser(userDto m.UserDto) (string, error) {
-	user := m.User{
-		Name:         userDto.Name,
-		Username:     userDto.Username,
-		PasswordHash: generateHash(userDto.Password),
-	}
-	return s.repo.CreateUser(user)
-}
-
-func (s *AuthService) GenerateToken(username, password string) (string, error) {
-	user, err := s.repo.GetUser(username, generateHash(password))
+	password, err := GeneratehashPassword(userDto.Password)
 	if err != nil {
 		return "empty", err
 	}
 
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &tokenClaims{
-		jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(tokenTTL).Unix(),
-			IssuedAt:  time.Now().Unix(),
-		},
-		user.ExternalUuid,
-	})
+	logrus.Info("generated hash")
+	logrus.Info(password)
 
-	return token.SignedString([]byte(signatureKey))
+	userRoleId, err := s.repo.GetUserRoleId()
+	if err != nil {
+		return "empty", errors.New("couldn't find user role")
+	}
+
+	user := m.User{
+		Username:     userDto.Username,
+		PasswordHash: password,
+		RoleId:       userRoleId,
+	}
+
+	userInfo := m.UserInfo{
+		Name:  userDto.Name,
+		Email: userDto.Email,
+	}
+
+	return s.repo.CreateUser(user, userInfo)
 }
 
+func (s *AuthService) GenerateJWT(username, password string) (m.TokenResponse, error) {
+	user, err := s.repo.GetUser(username)
+	if err != nil {
+		return m.TokenResponse{}, errors.New("could find user")
+	}
+
+	check := CheckPasswordHash(password, user.PasswordHash)
+	if !check {
+		return m.TokenResponse{}, errors.New("username or password is incorrect")
+	}
+
+	var mySigningKey = []byte(salt)
+	token := jwt.New(jwt.SigningMethodHS256)
+	time := time.Now().Add(tokenTTL).Unix()
+	claims := token.Claims.(jwt.MapClaims)
+
+	claims["authorized"] = true
+	claims["username"] = username
+	claims["role"] = user.RoleName
+	claims["exp"] = time
+	claims["user_uuid"] = user.ExternalUuid
+
+	tokenString, err := token.SignedString(mySigningKey)
+	if err != nil {
+		return m.TokenResponse{}, err
+	}
+
+	return m.TokenResponse{Role: user.RoleName, TokenString: tokenString, Exptime: time}, nil
+}
+
+// todo....
 func (s *AuthService) ParseToken(accessToken string) (string, error) {
+	var mySigningKey = []byte(salt)
+
+	token, err := jwt.Parse(accessToken, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, errors.New("there was an error in parsing token.")
+		}
+		return mySigningKey, nil
+	})
+
 	token, err := jwt.ParseWithClaims(accessToken, &tokenClaims{}, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, errors.New("invalid signing method")
@@ -76,9 +118,12 @@ func (s *AuthService) ParseToken(accessToken string) (string, error) {
 	return claims.UserUuid, nil
 }
 
-func generateHash(password string) string {
-	hash := sha1.New()
-	hash.Write([]byte(password))
+func GeneratehashPassword(password string) (string, error) {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
+	return string(bytes), err
+}
 
-	return fmt.Sprintf("%x", hash.Sum([]byte(salt)))
+func CheckPasswordHash(password, hash string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+	return err == nil
 }
