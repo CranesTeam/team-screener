@@ -17,7 +17,3 @@ func newErrorResponse(g *gin.Context, statusCode int, message string) {
 type CreateResponse struct {
 	Uuid string `json:"uuid"`
 }
-
-type AuthTokenResponse struct {
-	Token string `json:"token"`
-}

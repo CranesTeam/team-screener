@@ -21,7 +21,6 @@ import (
 // @Router       /auth/sing-up [POST]
 func (h *Handler) singUp(c *gin.Context) {
 	var user model.UserDto
-
 	if err := c.BindJSON(&user); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
@@ -43,7 +42,7 @@ func (h *Handler) singUp(c *gin.Context) {
 // @Tags         auth
 // @Accept       json
 // @Produce      json
-// @Param        user body model.UserAuthRequest true "account info"
+// @Param        user body model.TokenResponse true "user token info"
 // @Success      200  {object}  CreateResponse
 // @Failure      400  {object}  errorResponse
 // @Failure      404  {object}  errorResponse
@@ -51,7 +50,6 @@ func (h *Handler) singUp(c *gin.Context) {
 // @Router       /auth/sing-in [POST]
 func (h *Handler) singIn(c *gin.Context) {
 	var user model.UserAuthRequest
-
 	if err := c.BindJSON(&user); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
@@ -59,11 +57,11 @@ func (h *Handler) singIn(c *gin.Context) {
 
 	logrus.Infof("Generate user token for user:%s", user)
 
-	token, err := h.services.GenerateToken(user.Username, user.Password)
+	token, err := h.services.GenerateJWT(user.Username, user.Password)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	c.JSON(http.StatusOK, AuthTokenResponse{Token: token})
+	c.JSON(http.StatusOK, token)
 }

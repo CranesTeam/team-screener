@@ -6,8 +6,9 @@ import (
 )
 
 type Authorization interface {
-	CreateUser(user m.User) (string, error)
-	GetUser(username, password string) (m.User, error)
+	GetUserRoleId() (int, error)
+	CreateUser(user m.User, userInfo m.UserInfo) (string, error)
+	GetUser(username string) (m.User, error)
 }
 
 type Skills interface {

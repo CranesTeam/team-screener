@@ -7,7 +7,7 @@ import (
 
 type Authorization interface {
 	CreateUser(user m.UserDto) (string, error)
-	GenerateToken(username, password string) (string, error)
+	GenerateJWT(username, password string) (m.TokenResponse, error)
 	ParseToken(token string) (string, error)
 }
 

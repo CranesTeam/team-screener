@@ -8,8 +8,10 @@ import (
 
 const (
 	usersTable      = "users"
+	userRolesTable  = "user_roles"
+	userInfoTable   = "user_info"
 	skillsTable     = "skills"
-	userSkillsTable = "userSkills"
+	userSkillsTable = "user_skills"
 )
 
 type Config struct {
