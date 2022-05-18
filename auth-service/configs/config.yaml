@@ -1,9 +1,14 @@
-port: "9009"
+port: "9096"
 
 db:
   postgres:
     host: "localhost"
-    port: "5432"
+    port: "5433"
     database: "postgres"
-    username: "postgres"
-    sslMode: "disable"
+    username: "auth"
+    password: "pwd"
+
+auth:
+  server:
+    domain: "http://localhost:8089"
+    secret: "qrkjk#4#%35FSFJlja#4353KSFjH"
