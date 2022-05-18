@@ -1,4 +1,4 @@
-port: "9096"
+port: ":9096"
 
 db:
   postgres:
