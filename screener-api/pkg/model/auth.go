@@ -10,3 +10,9 @@ type TokenResponse struct {
 	TokenString string `json:"token"`
 	Exptime     int64  `json:"exp_time"`
 }
+
+type UserRequest struct {
+	Sercet string `json:"secret"  binding:"required"`
+	Domain string `json:"domain"  binding:"required"`
+	UserId string `json:"userId"  binding:"required"`
+}

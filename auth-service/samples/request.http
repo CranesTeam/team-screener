@@ -1,0 +1,10 @@
+# registration
+
+curl --location --request POST 'http://localhost:9096/registration' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "secret": "ffd231231",
+    "domain": "http://localhost:8089",
+    "userId": "qweqvcxc1e"
+}'
+

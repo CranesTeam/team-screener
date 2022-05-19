@@ -2,6 +2,8 @@ package service
 
 import (
 	"errors"
+	"fmt"
+	"net/http"
 	"time"
 
 	m "github.com/CranesTeam/team-screener/pkg/model"
@@ -35,27 +37,25 @@ func (s *AuthService) CreateUser(userDto m.UserDto) (string, error) {
 	if err != nil {
 		return "empty", err
 	}
-
-	logrus.Info("generated hash")
-	logrus.Info(password)
-
 	userRoleId, err := s.repo.GetUserRoleId()
 	if err != nil {
 		return "empty", errors.New("couldn't find user role")
 	}
 
-	user := m.User{
-		Username:     userDto.Username,
-		PasswordHash: password,
-		RoleId:       userRoleId,
-	}
+	user := m.User{Username: userDto.Username, PasswordHash: password, RoleId: userRoleId}
+	userInfo := m.UserInfo{Name: userDto.Name, Email: userDto.Email}
 
-	userInfo := m.UserInfo{
-		Name:  userDto.Name,
-		Email: userDto.Email,
-	}
+	uuid, err := s.repo.CreateUser(user, userInfo)
 
-	return s.repo.CreateUser(user, userInfo)
+	logrus.Info("go to auth server...")
+	resp, err := http.Get(fmt.Sprintf("%s/test?access_token=%s", authServerURL, globalToken.AccessToken))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	defer resp.Body.Close()
+
+	return uuid, err
 }
 
 func (s *AuthService) GenerateJWT(username, password string) (m.TokenResponse, error) {

@@ -11,4 +11,4 @@ db:
 auth:
   server:
     domain: "http://localhost:8089"
-    secret: "qrkjk#4#%35FSFJlja#4353KSFjH"
+    server: "qrkjk#4#%35FSFJlja#4353KSFjH"
